@@ -13,13 +13,13 @@ When Stock Inventory is made for a product, two account move line will be create
 that affect the 'stock' and 'balance statement' account by credit, and other that
 affect the 'Cost of Sale' account defined for this product by debit.
 
-- account_expense of product category domain can be type of 'stock'.
+- account_expense of product category domain can be type of 'stock' and 'balance statement'.
 - If a product is type of 'goods' the account_expense defined in its category
-  must be type of 'stock', else if product is type of 'service' the account_expense
-  must be type of 'expense'.
+  must be type of 'stock' and 'balance statement', else if product is type of 'service'
+  the account_expense must be type of 'expense'.
 - Define a new field for product category 'account_cost_of_sale',
   which is the expense cost of sale account. This account is available only if account_expense
-  type stock is True. It is used when Stock Inventory is made.
+  type if 'balance statement'. It is used when Stock Inventory is made.
 
 Installing
 ----------
