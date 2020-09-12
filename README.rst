@@ -6,9 +6,6 @@ Account Stock Cost of Sale for Tryton.
 It take care of account moves for products type of 'goods' on Purchases, affecting
 cost of sale by Stock Inventories.
 
-When Purchase is processed, the account type of invoice line account for product
-must be 'stock' and 'balance statement' and it is debited.
-
 When Stock Inventory is made for a product, two account move line will be created, one
 that affect the 'stock' and 'balance statement' account by credit, and other that
 affect the 'Cost of Sale' account defined for this product by debit.
