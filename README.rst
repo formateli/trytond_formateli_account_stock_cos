@@ -6,9 +6,9 @@ Account Stock Cost of Sale for Tryton.
 It take care of account moves for products type of 'goods' on Purchases, affecting
 cost of sale by Stock Inventories.
 
-When Stock Inventory is made for a product, two account move line will be created, one
-that affect the 'stock' and 'balance statement' account by credit, and other that
-affect the 'Cost of Sale' account defined for this product by debit.
+When Stock Inventory is made an account move is created, two account move line will be created
+for every product affected, one that affect its 'stock' and 'balance statement' account by credit,
+and other that affect its 'Cost of Sale' expense account by debit.
 
 - account_expense of product category domain can be type of 'stock' and 'balance statement'.
 - If a product is type of 'goods' the account_expense defined in its category

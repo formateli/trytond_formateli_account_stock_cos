@@ -4,6 +4,8 @@
 from trytond.pool import Pool
 from . import product
 from . import invoice
+from . import inventory
+from . import account
 
 
 def register():
@@ -13,4 +15,8 @@ def register():
         product.Template,
         product.Product,
         invoice.InvoiceLine,
+        account.Configuration,
+        account.ConfigurationStockJournal,
+        account.AccountMove,
+        inventory.Inventory,
         module='account_stock_cos', type_='model')
