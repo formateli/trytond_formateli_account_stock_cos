@@ -45,3 +45,5 @@ MANIFEST
 *.svg
 *.png
 *.csv
+
+localize.xsl
