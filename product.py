@@ -15,6 +15,7 @@ class Category(metaclass=PoolMeta):
             domain=[
                 ('closed', '!=', True),
                 ('type.expense', '=', True),
+                ('type.stock', '=', True),
                 ('id', 'not in', [
                         Eval('account_expense', -1),
                         Eval('account_revenue', -1)]),
@@ -95,19 +96,6 @@ class CategoryAccount(metaclass=PoolMeta):
 
 class Template(metaclass=PoolMeta):
     __name__ = 'product.template'
-
-    @classmethod
-    def __setup__(cls):
-        super(Template, cls).__setup__()
-
-        cls.account_category.domain.append(
-            If((Eval('type'), '=', 'goods'),
-                ('account_expense.type.statement', '=', 'balance'),
-                ('account_expense.type.statement', '!=', None)
-            )
-            )
-
-        cls.account_category.depends += ['type']
 
     @property
     @account_used('account_cost_of_sale', 'account_category')

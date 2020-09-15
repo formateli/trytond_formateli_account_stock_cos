@@ -17,13 +17,10 @@ class Inventory(metaclass=PoolMeta):
         ],
         depends=['company'])
 
-    def _get_account_move_line_cos(self, period, account, debit, credit):
+    def _get_account_move_line_cos(self, period, account,
+                                   debit, credit):
         pool = Pool()
         AccountMoveLine = pool.get('account.move.line')
-
-        exp = Decimal(str(10.0 ** -account.currency_digits))
-        debit = debit.quantize(exp)
-        credit =  credit.quantize(exp)
 
         move_line = AccountMoveLine(
             period=period,
@@ -34,23 +31,51 @@ class Inventory(metaclass=PoolMeta):
         return move_line
 
     def _get_account_move_lines_cos(self, period):
+        def get_amount(account, qty, cost):
+            if cost == 0:
+                return cost
+            exp = Decimal(str(10.0 ** -account.currency_digits))
+            result = Decimal(qty) * cost
+            return result.quantize(exp)
+
         acc_lines = []
         for line in self.lines:
             if line.product.type != 'goods':
                 continue
-            if line.quantity == line.expected_quantity:
+
+            diff = line.expected_quantity - line.quantity
+
+            if diff == 0:
                 continue
+
+            amount_1 = Decimal('0.0')
+            amount_2 = Decimal('0.0')
+
+            if diff > 0:
+                amount_1 = line.product.cost_price
+            else:
+                amount_2 = line.product.cost_price
+            diff = abs(diff)
+
             line_debit = self._get_account_move_line_cos(
                 period,
                 line.product.account_cost_of_sale_used,
-                line.product.cost_price,
-                Decimal('0.0'),
+                get_amount(
+                    line.product.account_cost_of_sale_used,
+                    diff, amount_1),
+                get_amount(
+                    line.product.account_cost_of_sale_used,
+                    diff, amount_2),
                 )
             line_credit = self._get_account_move_line_cos(
                 period,
                 line.product.account_expense_used,
-                Decimal('0.0'),
-                line.product.cost_price,
+                get_amount(
+                    line.product.account_expense_used,
+                    diff, amount_2),
+                get_amount(
+                    line.product.account_expense_used,
+                    diff, amount_1),
                 )
             acc_lines += [line_debit, line_credit]
 
@@ -98,7 +123,7 @@ class Inventory(metaclass=PoolMeta):
             if acc_move is None:
                 continue
             acc_moves.append(acc_move)
-            inventory.move = acc_move
+            inventory.account_move = acc_move
             invs.append(inventory)
 
         AccountMove.save(acc_moves)

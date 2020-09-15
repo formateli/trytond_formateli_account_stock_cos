@@ -2,7 +2,8 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from trytond.pool import PoolMeta, Pool
-from trytond.model import ModelSQL, ValueMixin, fields
+from trytond.model import ModelSQL, fields
+from trytond.modules.company.model import CompanyValueMixin
 
 
 class Configuration(metaclass=PoolMeta):
@@ -11,15 +12,22 @@ class Configuration(metaclass=PoolMeta):
         'account.journal', "Stock Journal", required=True))
 
     @classmethod
+    def multivalue_model(cls, field):
+        pool = Pool()
+        if field == 'stock_journal':
+            return pool.get('account.configuration.stock_journal')
+        return super(Configuration, cls).multivalue_model(field)
+
+    @classmethod
     def default_stock_journal(cls, **pattern):
         return cls.multivalue_model('stock_journal').default_stock_journal()
 
 
-class ConfigurationStockJournal(ModelSQL, ValueMixin):
+class ConfigurationStockJournal(ModelSQL, CompanyValueMixin):
     "Account Configuration Stock Journal"
     __name__ = 'account.configuration.stock_journal'
-    stock_journal = fields.MultiValue(fields.Many2One(
-        'account.journal', "Stock Journal", required=True))
+    stock_journal = fields.Many2One(
+        'account.journal', "Stock Journal", required=True)
 
     @classmethod
     def default_stock_journal(cls):
